@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head >
+    <meta charset="UTF-8">
+    <title>情人节</title>
+
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    body{
+        background: url("img/QQ20170210195400.png");
+        background-color: #af7262;
+        font-family: serif,sans-serif,"宋体";
+        font-size: 16px;
+    }
+    #top{
+        width: 80%;
+        height: 70px;
+        margin: 0 auto;
+    }
+    #box{
+        width: 1400px;
+        height: 800px;
+        margin: 0px auto;
+        background: url("img/b0bb0f2403c63598efdab1f54e729aa5.jpg") no-repeat;
+        border-radius: 20px;
+    }
+    #container {
+        width: 660px;
+        margin: 100px auto;
+        box-shadow: 0px 0px 10px #ccc;
+        border-radius:15px;
+        height:440px;
+        margin-top: 10px;
+        margin-top: 70px;
+        margin-right: 170px;
+    }
+    .card1{
+        width:500px;
+        height: 660px;
+        background-color: #493743;
+        float: left;
+        margin-left:68px;
+        margin-top:40px;
+        overflow: hidden;
+        opacity: 0.9;
+        border-radius: 15px;
+
+    }
+    /*.card2{
+        width: 300px;
+        height: 440px;
+        background-color: #4b363f;
+        margin-right: 68px;
+        margin-top:70px;
+        float: right;
+        overflow: hidden;
+        opacity: 0.9;
+        border-radius: 15px;
+    }*/
+    .card .front, .card .bakc{
+        position: absolute;
+        transition: transform 0.4S;
+        -webkit-transition: transform 1s;
+        transform-style: preserve-3d;
+        -webkit-transform-style: preserve-3d;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+    }
+    .card .front{
+        -webkit-transform: rotateY(0deg);
+        -moz-transform: rotateY(0deg);
+        transform: rotateY(0deg);
+    }
+    .card .bakc{
+        transform: rotateY(-180deg);
+    }
+    .card:hover .front{
+        transform: rotateY(180deg);
+    }
+    .card:hover .bakc{
+        transform: rotateY(0deg);
+    }
+    #container img {
+        float: left;
+    }
+   #box h1{
+        font-size: 50px;
+        text-align: center;
+        font-family: serif,sans-serif,"宋体";
+        padding-top: 40px;
+    }
+    #top a{
+        text-decoration: none;
+        color: #d6d8b3;
+    }
+    #container ul {
+        list-style: none;
+    }
+    #container ul li {
+        width: 200px;
+        height: 200px;
+        overflow: hidden;
+        float: left;
+        margin: 10px;
+        border-radius: 15px;
+        position: relative;
+    }
+    #container .adv {
+        width: 200px;
+        background: rgba(0, 0, 0, 0.5);
+        position: absolute;
+        top: 40px;
+        left: 0;
+        text-align: center;
+        color: #fff;
+        transtion:all 0.5S;
+        -webkit-transition: all 0.5s;
+        transform:rotate(55deg);
+        -webkit-transform: rotate(55deg);
+        overflow:hidden;
+        height: 0px;
+        z-index: 100;
+    }
+    #container .adv h3 {
+          color: #ffa4ba;
+          border-bottom: 2px solid rgba(255,255,255,0.5);
+          padding: 10px 0px;
+          font-size: 30px;
+      }
+    #container .adv p {
+        line-height: 30px;
+        padding: 10px 0px ;
+        font-size: 20px;
+        color: #ff4e4e;
+        font-weight:bolder;
+    }
+    #container ul li:hover .adv {
+        height: 120px;
+        transform:rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+    }
+    #container ul li:before {
+        content: "";
+        position: absolute;
+        top: -240px;
+        right: 0px;
+        width: 360px;
+        height: 360px;
+        background: rgba(150, 50, 100, 0.5);
+        transform:rotate(55deg) translateX(60px);
+        -webkit-transform: rotate(55deg) translateX(60px);
+        -ms-transform: rotate(55deg) translateX(60px);
+        transform-origin:right top;
+        -webkit-transform-origin: 100% 0%;
+        -ms-transform-origin: 100% 0%;
+        transition:all 0.5s ease 0.3s;
+        -webkit-transition: all 0.5s ease 0.3s;
+        -ms-transition: all 0.5s ease 0.3s;
+    }
+    #container ul li:hover:before {
+        top: 0px;
+    }
+    #container ul li:after {
+        content: "";
+        display: block;
+        position: absolute;
+        bottom: -240px;
+        left: 0;
+        width: 360px;
+        height: 360px;
+        background: rgba(150,50,100,0.5);
+        transform: rotate(55deg) translateX(-60px);
+        -webkit-transform: rotate(55deg) translateX(-60px);
+        -ms-transform: rotate(55deg) translateX(-60px);
+        transform-origin:  left bottom;
+        -webkit-transform-origin: 0% 100%;
+        -ms-transform-origin: 0% 100%;
+        transition: all 0.5s ease 0.3s;
+        -webkit-transition: all 0.5s ease 0.3s;
+        -ms: all 0.5s ease 0.3s;
+    }
+    #container ul li:hover:after{
+        bottom: 0px;
+    }
+    #bottom{
+        text-align: center ;
+        margin-top:-80px;
+        margin-right: 40px;
+    }
+</style>
+</head>
+<body>
+
+<div id="box" >
+    <div id="top">
+        <h1 class="slogan"><a href="">玫瑰之约，就在情人节</a></h1>
+    </div>
+    <div class="card card1">
+        <a href="#"class="bakc"><img src="img/psb.jpg" alt=""></a>
+        <a href="#"class="front"><img src="img/299869.jpg" alt=""></a>
+    </div>
+    <!--<div class="card card2">
+        <a href="#"class="bakc"><img src="img/2011120795002.jpg" alt=""></a>
+        <a href="#"class="front"><img src="img/2011120795001.jpg" alt=""></a>
+    </div>-->
+    <div id="container">
+        <ul>
+            <li><img src="img/modeo02.jpg" alt="">
+                <div class="adv">
+                    <h3>花语</h3>
+                    <p>玫瑰花语</p>
+                </div>
+                </li>
+            <li><img src="img/modeo03.jpg" alt="">
+                <div class="adv">
+                    <h3>花语</h3>
+                    <p>玫瑰花语</p>
+                </div>
+            </li>
+            <li><img src="img/modeo04.jpg" alt="">
+                <div class="adv">
+                    <h3>花语</h3>
+                    <p>玫瑰花语</p>
+                </div>
+            </li>
+            <li><img src="img/modeo05.jpg" alt="">
+                <div class="adv">
+                    <h3>花语</h3>
+                    <p>玫瑰花语</p>
+                </div>
+            </li>
+            <li><img src="img/modeo06.jpg" alt="">
+                <div class="adv">
+                    <h3>花语</h3>
+                    <p>玫瑰花语</p>
+                </div>
+            </li>
+            <li><img src="img/modeo07.jpg" alt="">
+                <div class="adv">
+                    <h3>花语</h3>
+                    <p>玫瑰花语</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div id="bottom"><img src="img/55561.png" alt=""/></div>
+</div>
+</body>
+</html>
