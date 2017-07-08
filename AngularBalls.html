@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html ng-app="myApp"><!-- screen -->
+<head>
+    <meta charset="UTF-8">
+    <title>小球动画 Balls - H5 C3 JS</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>
+        * {margin: 0;padding: 0;}
+        html {
+            background: #666;
+        }
+        body {
+            width: 100vw; /* vw: view-width */
+            height: 100vh; /* vh: view-height */
+            color: #fff;
+            background: #666;
+            font-family: Consolas, sans-serif;
+        }
+        h1 {
+            width: 400px;
+            position: fixed;
+            left: calc(50% - 200px);
+            top: calc(50% - 60px);
+            font-size: 32px;
+            text-align: center;
+            text-shadow: 1px 1px 4px #333;
+            text-transform: uppercase;
+            opacity: .6;
+            z-index: 100;
+        }
+        .ball {
+            position: fixed;
+            left: 0; top: 0;
+            width: 100px;
+            height: 100px;
+            background: #39f;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body ng-controller="myCtrl">
+<h1>小球运动<p id="info">{{ssw}}&times;{{ssh}}</p></h1>
+<!--用ng-repeat循环数组内小球的数据然后输出，并用ng-style方式修改小球的样式，$index获取数组下标-->
+<div class="ball" ng-repeat="row in balls" ng-style="{
+                                                        left:balls[$index].x+'px',
+                                                        top:balls[$index].y+'px',
+                                                        width:balls[$index].d+'px',
+                                                        height:balls[$index].d+'px',
+                                                        background:balls[$index].bg
+                                                        }">
+</div>
+<script src="js/angular.min.js"></script>
+<script>
+    angular.module('myApp',[])
+            .controller('myCtrl',['$scope','$interval',
+                function($scope,$interval){
+                    //获取实际屏幕宽高，用于小球反弹判断。
+                    var sw=document.documentElement.clientWidth;
+                    var sh=document.documentElement.clientHeight;
+                    $scope.ssw=sw;
+                    $scope.ssh=sh;
+                    //获取屏幕随动的宽高，实时更新SW,SH
+                    window.onresize=function(){
+                        sw=document.documentElement.clientWidth;
+                        sh=document.documentElement.clientHeight;
+                        $scope.ssw=sw;
+                        $scope.ssh=sh;
+                    };
+                    //定义一个空数组，便于循环传值。
+                    $scope.balls=[];
+                    //生成随机函数：rand，可以让小球有多种变化。
+                    $scope.rand=function(a,b){
+                        return parseInt(Math.random()*(b-a)+a);
+                    };
+                    //循环生成小球数据。x,y 坐标，dx,dy 方向，sx,sy 速度
+                    for( var i=0 ; i<20;i++){
+                        $scope.ball={
+                            d:$scope.rand(5,100),
+                            x:$scope.rand(0,sw),
+                            y:$scope.rand(0,sh),
+                            sx:$scope.rand(1,10),
+                            sy:$scope.rand(1,10),
+                            dx:1,
+                            dy:1,
+                            bg:"rgba("+$scope.rand(90,255)+"," +
+                                    ""+$scope.rand(90,255)+"," +
+                                    ""+$scope.rand(90,255)+"," +
+                                    ""+$scope.rand(2,8)/10+")"
+                        };
+                        //生成的数据传值给balls[]空数组
+                        $scope.balls.push($scope.ball)
+                    }
+                    //定义一个函数来修改数组内球的属性值
+                    $scope.motion=function(){
+                        for(var i=0;i<$scope.balls.length;i++){
+                            $scope.balls[i].x+=$scope.balls[i].sx*$scope.balls[i].dx;
+                            $scope.balls[i].y+=$scope.balls[i].sy*$scope.balls[i].dy;
+                            if($scope.balls[i].x>sw-$scope.balls[i].d||$scope.balls[i].x<=0){
+                                $scope.balls[i].x=($scope.balls[i].x<0&&$scope.balls[i].d<0)?0:($scope.balls[i].x);
+                                $scope.balls[i].dx=-$scope.balls[i].dx
+                            }
+                            if($scope.balls[i].y>sh-$scope.balls[i].d||$scope.balls[i].y<=0){
+                                $scope.balls[i].y=($scope.balls[i].y<0&&$scope.balls[i].d<0)?0:($scope.balls[i].y);
+                                $scope.balls[i].dy=-$scope.balls[i].dy
+                            }
+                        }
+
+                    };
+                    //定时器
+                    $interval($scope.motion,10);
+                    //调用函数
+                    $scope.motion();
+    }])
+</script>
+</body>
+</html>
