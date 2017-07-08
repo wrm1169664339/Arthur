@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+    <meta charset="utf-8">
+    <title>马克档编辑器 MARKDOWN EDITOR</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+    body {
+        padding-top: 70px;
+    }
+
+    [ng-click] {
+        cursor: pointer;
+    }
+
+    textarea.editor {
+        height: 500px;
+    }
+
+    .preview {
+        display: block;
+        padding: 20px;
+        background: #f5f5f5;
+        height: 500px;
+        overflow: scroll;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    </style>
+</head>
+
+<body ng-controller="mdeCtrl">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <div class="navbar-brand">
+                    马克档编辑器
+                    <i class="glyphicon glyphicon-pencil"></i>
+                    Markdown Editor
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <i class="glyphicon glyphicon-book"></i>
+                            我的笔记
+                            <button class="btn btn-primary btn-xs pull-right" ng-click="create()">
+                                <i class="glyphicon glyphicon-plus"></i>
+                                新建
+                            </button>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <p ng-if="!notes.length">尚无</p>
+                        <ul class="list-group">
+                            <li class="list-group-item" ng-repeat="note in notes" ng-click="view($index)" ng-class="{active: note.id == edit.id}">
+                                {{ note.title }}
+                                <br>
+                                <small>{{ note.date | date:'yyyy-MM-dd HH:mm:ss' }}</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-9">
+                <div class="panel panel-default" ng-hide="editing">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            {{ edit.title }}
+                            <button class="btn btn-primary btn-xs pull-right" ng-click="editing = true">
+                                <i class="glyphicon glyphicon-edit"></i>
+                                编辑
+                            </button>
+                        </h3>
+                    </div>
+                    <div class="panel-body" markdown="{{ edit.content }}"></div>
+                    <div class="panel-footer">{{ edit.date | date:'yyyy年MM月dd日 HH时mm分ss秒' }}</div>
+                </div>
+                <form name="editor" class="panel panel-default" ng-show="editing">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><input type="text" class="form-control" ng-model="edit.title" placeholder="新笔记" required></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h3 title="点击左右交换">
+                                    编辑器 &nbsp; <i class="glyphicon glyphicon-edit"></i>
+                                </h3>
+                                <textarea class="form-control editor" rows="10" ng-model="edit.content" placeholder="笔记内容" required></textarea>
+                            </div>
+                            <div class="col-sm-6">
+                                <h3 title="点击左右交换">
+                                    预览区 &nbsp; <i class="glyphicon glyphicon-eye-open"></i>
+                                </h3>
+                                <div class="preview" markdown="{{ edit.content }}"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-primary" ng-click="save()" ng-disabled="editor.$invalid">
+                            <i class="glyphicon glyphicon-floppy-disk"></i>
+                            保存
+                        </button>
+                        <button class="btn btn-danger pull-right" ng-click="remove()" ng-if="edit.id">
+                            <i class="glyphicon glyphicon-trash"></i>
+                            删除
+                        </button>
+                    </div>
+                </form>
+				<!-- <pre>{{ notes | json }}</pre> -->
+            </div>
+        </div>
+    </div>
+    <script src="js/angular.min.js"></script>
+    <script src="js/marked.js"></script>
+    <script>
+    angular.module('app', [])
+        .directive('markdown', function() {
+            var MD = new marked.Renderer();
+            // marked 基本设置
+            marked.setOptions({
+                renderer: MD,
+                gfm: true,
+                tables: true,
+                breaks: true, //false,
+                pedantic: true, //false,
+                sanitize: true, //false,
+                smartLists: true,
+                smartypants: true //false
+            });
+            return {
+                scope: {
+                    markdown: '@'
+                },
+                link: function(scope, element, attrs) {
+                    scope.$watch('markdown', function() {
+                        var content = marked(attrs.markdown);
+                        element.html(content);
+                    });
+                }
+            }
+        })
+        .controller('mdeCtrl', ['$scope', function($scope) {
+            $scope.editing = true;
+            $scope.notes = [{
+                id: Date.now(),
+                title: "你好，世界！",
+                content: "## Hello world! \n\n* 这是我的马克档编辑器！",
+                date: Date.now()
+            }];
+            $scope.view = function(index) {    //列表单击事件
+                $scope.editing = false;
+                $scope.edit = $scope.notes[index];
+            };
+            $scope.create = function() {  //新建笔记
+                $scope.editing = true;
+                $scope.edit = {
+                    title: '',
+                    content: ''
+                };
+            };
+            //保存到本地存储
+            $scope.restore = function() {
+                var data = localStorage['_MARKDOWN_NOTES_'];
+                if (typeof(data) !== 'undefined' && data !== '[]') {
+                    $scope.notes = JSON.parse(data);
+                }
+            };
+            $scope.getIndex = function(id) {
+                for (var i = 0; i < $scope.notes.length; i++) {
+                    if ($scope.notes[i].id == id) {
+                        return i;
+                    }
+                }
+                return -1;
+            };
+            $scope.storage = function() {
+				console.log($scope.notes);
+                localStorage['_MARKDOWN_NOTES_'] = JSON.stringify($scope.notes).replace(',"$$hashKey":"object:5"','');
+            };
+            $scope.save = function() {          //保存
+                $scope.edit.date = Date.now();
+                if ($scope.edit.id) {
+                    var index = $scope.getIndex($scope.edit.id);
+                    if (index >= 0) {
+                        $scope.notes[index].content = $scope.edit.content;
+                        $scope.editing = false;
+						$scope.storage();
+                    } else {
+                        $scope.error = '不能更新笔记！';
+                    }
+                } else {
+                    $scope.edit.id = Date.now();
+                    $scope.notes.push({
+						id: $scope.edit.id,
+						title: $scope.edit.title,
+						content: $scope.edit.content,
+						date: $scope.edit.date
+					});
+                    $scope.editing = false;
+					$scope.storage();
+                }
+            };
+            $scope.remove = function() {   //删除
+                var index = $scope.getIndex($scope.edit.id);
+                if (index >= 0) {
+                    $scope.notes.splice(index, 1);
+                }
+                $scope.storage();
+                $scope.edit = {
+                    title: '',
+                    content: ''
+                };
+            };
+            $scope.restore();
+        }]);
+    </script>
+</body>
+
+</html>
